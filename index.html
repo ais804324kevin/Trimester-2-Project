@@ -1,0 +1,100 @@
+<html>
+<head>
+<title> Survivor Main Menu </title>
+
+<!-- copy and paste the next 2 lines to setup the sound files, you must modify the loadsoundchrome.js file with your sounds -->
+<script type="text/javascript" src="script/soundmanager2.js"></script>
+<script type="text/javascript" src="script/loadsoundchrome.js"></script>
+<!-- Stop copying here -->
+
+<center>
+	<script type="text/javascript" src="script/processing-1.4.1.js"></script>
+	<script type="text/processing" data-processing-target="mycanvas">
+
+int backgroundMusic;
+int menuTransition;
+int mainMenu;
+
+//MainMenuPics
+PImage mainMenu;
+PImage mainMenuSpace;
+
+//Buttons
+PImage playNormal;
+PImage playHover;
+/* @pjs globalKeyEvents = "true"; */
+
+void setup()
+{
+size( 640, 480 );
+background(0,0,0);
+frameRate( 30 );   
+
+backgroundMusic = 0;
+menuTransition = 0;
+
+menuBackground = 0;
+
+pressToStartCounter = 0;
+
+mainMenu = loadImage("images/mainMenu/mainMenu.jpg");
+mainMenuSpace = loadImage("images/mainMenu/mainMenuSpace.jpg");
+playNormal = loadImage("images/buttons/playNormal.png");
+playHover = loadImage("images/buttons/playHover.png");
+}
+
+void draw()
+{
+if (menuBackground < 0.9)
+	{
+		image(mainMenuSpace,0,0);
+	}
+if (menuBackground > 0.9)
+	{
+		image(mainMenu,0,0);
+		image(playNormal,20,370,0,0);
+		if (mouseX > 20 && mouseX < 220 && mouseY > 370 && mouseY < 460)
+			{
+			image(playHover,20,370,0,0);
+			if (mousePressed == true && mouseButton == LEFT)
+				{
+					link("Game.html");
+				}
+			}
+	}
+if (keyPressed == true)
+
+//hold 'space' to start game
+	if (key == ' ')
+			{
+				//transition from hold to start -> main menu (visual)
+				menuTransition = menuTransition + 1;
+				if (menuTransition < 1.1 && menuTransition > 0.9)
+					{
+						menuTransition = 2;
+					}
+				if (menuTransition < 1)
+					{
+						menuBackground = 0;
+					}
+				if (menuTransition == 2)
+					{
+						menuBackground = 1;
+					}
+				//transition from hold to start -> main menu (audio)
+				backgroundMusic = backgroundMusic + 1;
+				if (backgroundMusic < 1.1 && backgroundMusic > 0.9)
+					{
+						backgroundMusic = 2;
+					}
+				if (backgroundMusic == 2)
+					{
+						//main menu soundtrack
+						soundManager.play('s0');
+					}
+			}
+}
+
+	</script>
+	<canvas id="mycanvas"></canvas>
+</center>

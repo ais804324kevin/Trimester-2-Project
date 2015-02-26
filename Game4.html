@@ -1,0 +1,839 @@
+<html>
+<head>
+<title> Survivor inGame Round 3 </title>
+
+<!-- copy and paste the next 2 lines to setup the sound files, you must modify the loadsoundchrome.js file with your sounds -->
+<script type="text/javascript" src="script/soundmanager2.js"></script>
+<script type="text/javascript" src="script/loadsoundchrome.js"></script>
+<!-- Stop copying here -->
+
+<center>
+	<script type="text/javascript" src="script/processing-1.4.1.js"></script>
+	<script type="text/processing" data-processing-target="mycanvas">
+
+/* @pjs globalKeyEvents = "true";*/
+
+//player
+PImage player;
+PImage startNormal;
+PImage startHover;
+PImage gunFlash;
+PImage blood;
+PImage roundClear;
+PImage nextRoundn;
+PImage nextRoundh;
+PImage restartn;
+PImage restarth;
+PImage youLose;
+
+int startCounter;
+
+int zombieStart;
+
+void setup()
+{
+size( 640, 480 );
+background(0,0,0);
+frameRate( 30 );   
+
+backgroundMusic = 0;
+
+startCounter = 0;
+
+gamePrep = 0;
+
+//game ends at zero
+zombieCount = 12;
+
+//first zombie
+zombieLife1 = 1;
+zombie1x = 30;
+zombie1y = -30;
+stopCount1 = 0;
+zombieDeathsound1 = 0;
+zombieHealth1 = 1;
+zombiePassedCount1 = 0;
+zombieCountt1 = 0;
+
+//second zombie
+zombieLife2 = 1;
+zombie2x = 180;
+zombie2y = -100;
+stopCount2 = 0;
+zombieDeathsound2 = 0;
+zombieHealth2 = 1;
+zombiePassedCount2 = 0;
+zombieCountt2 = 0;
+
+//third zombie
+zombieLife3 = 1;
+zombie3x = 400;
+zombie3y = -150;
+stopCount3 = 0;
+zombieDeathsound3 = 0;
+zombieHealth3 = 1;
+zombiePassedCount3 = 0;
+zombieCountt3 = 0;
+
+//fourth zombie
+zombieLife4 = 1;
+zombie4x = 520;
+zombie4y = -200;
+stopCount4 = 0;
+zombieDeathsound4 = 0;
+zombieHealth4 = 1;
+zombiePassedCount4 = 0;
+zombieCountt4 = 0;
+
+//5th zombie
+zombieLife5 = 1;
+zombie5x = 60;
+zombie5y = -300;
+stopCount5 = 0;
+zombieDeathsound5 = 0;
+zombieHealth5 = 1;
+zombiePassedCount5 = 0;
+zombieCountt5 = 0;
+
+//6th zombie
+zombieLife6 = 1;
+zombie6x = 320;
+zombie6y = -600;
+stopCount6 = 0;
+zombieDeathsound6 = 0;
+zombieHealth6 = 1;
+zombiePassedCount6 = 0;
+zombieCountt6 = 0;
+
+//7th zombie
+zombieLife7 = 1;
+zombie7x = 470;
+zombie7y = -80;
+stopCount7 = 0;
+zombieDeathsound7 = 0;
+zombieHealth7 = 1;
+zombiePassedCount7 = 0;
+zombieCountt7 = 0;
+
+//8th zombie
+zombieLife8 = 1;
+zombie8x = 610;
+zombie8y = -500;
+stopCount8 = 0;
+zombieDeathsound8 = 0;
+zombieHealth8 = 1;
+zombiePassedCount8 = 0;
+zombieCountt8 = 0;
+
+//9th zombie
+zombieLife9 = 1;
+zombie9x = 380;
+zombie9y = -800;
+stopCount9 = 0;
+zombieDeathsound9 = 0;
+zombieHealth9 = 1;
+zombiePassedCount9 = 0;
+zombieCountt9 = 0;
+
+//10th zombie
+zombieLife10 = 1;
+zombie10x = 550;
+zombie10y = -700;
+stopCount10 = 0;
+zombieDeathsound10 = 0;
+zombieHealth10 = 1;
+zombiePassedCount10 = 0;
+zombieCountt10 = 0;
+
+//11th zombie
+zombieLife11 = 1;
+zombie11x = 100;
+zombie11y = -430;
+stopCount11 = 0;
+zombieDeathsound11 = 0;
+zombieHealth11 = 1;
+zombiePassedCount11 = 0;
+zombieCountt11 = 0;
+
+//12th zombie
+zombieLife12 = 1;
+zombie12x = 590;
+zombie12y = -600;
+stopCount12 = 0;
+zombieDeathsound12 = 0;
+zombieHealth12 = 1;
+zombiePassedCount12 = 0;
+zombieCountt12 = 0;
+
+//roundWin
+stopSound = 0;
+
+//roundLost
+sadViolin = 0;
+
+//ambience
+startAmbience = 0;
+
+//mouseFire
+mouseFire = 0;
+
+//gunSound
+gunSound = 0;
+
+//Zombies Passed Count
+zombiesPassedCount = 0;
+
+zombieCountFinal = 0;
+
+crosshair = loadImage("images/inGame/crosshair.png");
+spaceStart = loadImage("images/buttons/spaceStart.png");
+zombie = loadImage("images/inGame/characters/CS2d Zombie.png");
+wave1 = loadImage("images/buttons/waves/wave1.png");
+wave2 = loadImage("images/buttons/waves/wave2.png");
+gunFlash = loadImage("images/inGame/gunFlash.png");
+blood = loadImage ("images/inGame/blood.png");
+roundClear = loadImage ("images/inGame/roundClear.png");
+nextRoundn = loadImage ("images/buttons/nextRoundn.png");
+nextRoundh = loadImage ("images/buttons/nextRoundh.png");
+restartn = loadImage ("images/buttons/restartn.png");
+restarth = loadImage ("images/buttons/restarth.png");
+youLose = loadImage ("images/buttons/youLose.png");
+
+noCursor();
+}
+
+void draw()
+{	
+background(0,0,0);
+
+//music
+if (startCounter == 0)
+	{
+		image(spaceStart,10,400,630,60);
+	}
+
+if (keyPressed == true)
+	{
+	if (key == ' ')
+		{
+		//transition from hold to start -> inGame (visual)
+		startCounter = 1;
+		}
+	}
+	
+if (startCounter == 1 && startAmbience == 0)
+	{
+		soundManager.play('s2');
+		startAmbience = 1;
+	}
+
+//zombies moving
+if (startCounter == 1)
+	{
+	if (zombieLife1 == 1)
+		{
+			zombie1y = zombie1y + 2;
+		}
+	else
+		{
+			zombie1y = zombie1y;
+		}
+	if (zombieLife2 == 1)
+		{	
+			zombie2y = zombie2y + 2;
+		}
+		
+	else
+		{
+			zombie2y = zombie2y;
+		}
+	if (zombieLife3 == 1)
+		{
+			zombie3y = zombie3y + 2;
+		}
+		
+	else
+		{
+			zombie3y = zombie3y;
+		}
+	if (zombieLife4 == 1)
+		{
+			zombie4y = zombie4y + 2;
+		}
+	else
+		{
+			zombie4y = zombie4y;
+		}
+	if (zombieLife5 == 1)
+		{
+			zombie5y = zombie5y + 4;
+		}
+	else
+		{
+			zombie5y = zombie5y;
+		}
+	if (zombieLife6 == 1)
+		{
+			zombie6y = zombie6y + 4;
+		}
+	else
+		{
+			zombie6y = zombie6y;
+		}
+	if (zombieLife7 == 1)
+		{
+			zombie7y = zombie7y + 4;
+		}
+	else
+		{
+			zombie7y = zombie7y;
+		}
+	if (zombieLife8 == 1)
+		{
+			zombie8y = zombie8y + 4;
+		}
+	else
+		{
+			zombie8y = zombie8y;
+		}
+	if (zombieLife9 == 1)
+		{
+			zombie9y = zombie9y + 5;
+		}
+	else
+		{
+			zombie9y = zombie9y;
+		}
+	if (zombieLife10 == 1)
+		{
+			zombie10y = zombie10y + 5;
+		}
+	else
+		{
+			zombie10y = zombie10y;
+		}
+	if (zombieLife11 == 1)
+		{
+			zombie11y = zombie11y + 5;
+		}
+	else
+		{
+			zombie11y = zombie11y;
+		}
+	if (zombieLife12 == 1)
+		{
+			zombie12y = zombie12y + 5;
+		}
+	else
+		{
+			zombie12y = zombie12y;
+		}
+	}
+
+//line
+fill(255,255,255);
+stroke(255,255,255);
+strokeWeight(5);
+line(0,400,640,400);
+
+//zombies
+	//zombie 1
+image(zombie,zombie1x,zombie1y,30,30);
+if (zombieHealth1 == 1)
+	{
+		fill (0,255,0);
+		stroke(0,255,0);
+		strokeWeight (5);
+		rect (zombie1x,zombie1y-10,29,1);
+	}
+if (zombie1y > 400 && zombieCountt1 == 0)
+	{
+		zombiePassedCount1 = 1;
+		zombieCount = zombieCount - 1;
+		zombieCountt1 = 1;
+	}
+	
+	//zombie 2
+image(zombie,zombie2x,zombie2y,30,30);
+if (zombieHealth2 == 1)
+	{
+		fill (0,255,0);
+		stroke(0,255,0);
+		strokeWeight (5);
+		rect (zombie2x,zombie2y-10,29,1);
+	}
+if (zombie2y > 400 && zombieCountt2 == 0)
+	{
+		zombiePassedCount2 = 1;
+		zombieCount = zombieCount - 1;
+		zombieCountt2 = 1;
+	}
+	
+	//zombie 3
+image(zombie,zombie3x,zombie3y,30,30);
+if (zombieHealth3 == 1)
+	{
+		fill (0,255,0);
+		stroke(0,255,0);
+		strokeWeight (5);
+		rect (zombie3x,zombie3y-10,29,1);
+	}
+if (zombie3y > 400 && zombieCountt3 == 0)
+	{
+		zombiePassedCount3 = 1;
+		zombieCount = zombieCount - 1;
+		zombieCountt3 = 1;
+	}
+
+	//zombie 4
+image(zombie,zombie4x,zombie4y,30,30);
+if (zombieHealth4 == 1)
+	{
+		fill (0,255,0);
+		stroke(0,255,0);
+		strokeWeight (5);
+		rect (zombie4x,zombie4y-10,29,1);
+	}
+if (zombie4y > 400 && zombieCountt4 == 0)
+	{
+		zombiePassedCount4 = 1;
+		zombieCount = zombieCount - 1;
+		zombieCountt4 = 1;
+	}
+
+//zombie 5
+image(zombie,zombie5x,zombie5y,30,30);
+if (zombieHealth5 == 1)
+	{
+		fill (0,255,0);
+		stroke(0,255,0);
+		strokeWeight (5);
+		rect (zombie5x,zombie5y-10,29,1);
+	}
+if (zombie5y > 400 && zombieCountt5 == 0)
+	{
+		zombiePassedCount5 = 1;
+		zombieCount = zombieCount - 1;
+		zombieCountt5 = 1;
+	}
+	
+//zombie 6
+image(zombie,zombie6x,zombie6y,30,30);
+if (zombieHealth6 == 1)
+	{
+		fill (0,255,0);
+		stroke(0,255,0);
+		strokeWeight (5);
+		rect (zombie6x,zombie6y-10,29,1);
+	}
+if (zombie6y > 400 && zombieCountt6 == 0)
+	{
+		zombiePassedCount6 = 1;
+		zombieCount = zombieCount - 1;
+		zombieCountt6 = 1;
+	}
+
+//zombie 7
+image(zombie,zombie7x,zombie7y,30,30);
+if (zombieHealth7 == 1)
+	{
+		fill (0,255,0);
+		stroke(0,255,0);
+		strokeWeight (5);
+		rect (zombie7x,zombie7y-10,29,1);
+	}
+if (zombie7y > 400 && zombieCountt7 ==0)
+	{
+		zombiePassedCount7 = 1;
+		zombieCount = zombieCount - 1;
+		zombieCountt7 = 1;
+	}
+	
+//zombie 8
+image(zombie,zombie8x,zombie8y,30,30);
+if (zombieHealth8 == 1)
+	{
+		fill (0,255,0);
+		stroke(0,255,0);
+		strokeWeight (5);
+		rect (zombie8x,zombie8y-10,29,1);
+	}
+if (zombie8y > 400 && zombieCountt8 == 0)
+	{
+		zombiePassedCount8 = 1;
+		zombieCount = zombieCount - 1;
+		zombieCountt8 = 1;
+	}
+
+//zombie 9
+image(zombie,zombie9x,zombie9y,30,30);
+if (zombieHealth9 == 1)
+	{
+		fill (0,255,0);
+		stroke(0,255,0);
+		strokeWeight (5);
+		rect (zombie9x,zombie9y-10,29,1);
+	}
+if (zombie9y > 400 && zombieCountt9 == 0)
+	{
+		zombiePassedCount9 = 1;
+		zombieCount = zombieCount - 1;
+		zombieCountt9 = 1;
+	}
+	
+//zombie 10
+image(zombie,zombie10x,zombie10y,30,30);
+if (zombieHealth10 == 1)
+	{
+		fill (0,255,0);
+		stroke(0,255,0);
+		strokeWeight (5);
+		rect (zombie10x,zombie10y-10,29,1);
+	}
+if (zombie10y > 400 && zombieCountt10 == 0)
+	{
+		zombiePassedCount10 = 1;
+		zombieCount = zombieCount - 1;
+		zombieCountt10 = 1;
+	}
+
+//zombie 11
+image(zombie,zombie11x,zombie11y,30,30);
+if (zombieHealth11 == 1)
+	{
+		fill (0,255,0);
+		stroke(0,255,0);
+		strokeWeight (5);
+		rect (zombie11x,zombie11y-10,29,1);
+	}
+if (zombie11y > 400 && zombieCountt11 == 0)
+	{
+		zombiePassedCount11 = 1;
+		zombieCount = zombieCount - 1;
+		zombieCountt11 = 1;
+	}
+	
+//zombie 12
+image(zombie,zombie12x,zombie12y,30,30);
+if (zombieHealth12 == 1)
+	{
+		fill (0,255,0);
+		stroke(0,255,0);
+		strokeWeight (5);
+		rect (zombie12x,zombie12y-10,29,1);
+	}
+if (zombie8y > 400 && zombieCountt12 == 0)
+	{
+		zombiePassedCount12 = 1;
+		zombieCount = zombieCount - 1;
+		zombieCountt12 = 1;
+	}
+
+fill (255,255,255);
+
+//killing first zombie
+if (mousePressed == true && mouseButton == LEFT && mouseX > zombie1x && mouseX < zombie1x + 30
+&& mouseY > zombie1y && mouseY < zombie1y + 30 && stopCount1 == 0)
+	{
+		zombieLife1 = 0;
+		zombieCount = zombieCount - 1;
+		stopCount1 = 1;
+		zombieHealth1 = 0;
+	}
+if (zombieLife1 == 0)
+	{
+		image(blood,zombie1x-20,zombie1y-10,70,50);
+		if (zombieDeathsound1 == 0)
+		{
+			soundManager.play('s4');
+			zombieDeathsound1 = 1;
+		}
+	}
+
+//killing second zombie
+if (mousePressed == true && mouseButton == LEFT && mouseX > zombie2x && mouseX < zombie2x + 30
+&& mouseY > zombie2y && mouseY < zombie2y + 30 && stopCount2 == 0)
+	{
+		zombieCount = zombieCount - 1;
+		zombieLife2 = 0;
+		stopCount2 = 1;
+		zombieHealth2 = 0;
+	}
+if (zombieLife2 == 0)
+	{
+		image(blood,zombie2x-20,zombie2y-10,70,50);
+		if (zombieDeathsound2 == 0)
+		{
+			soundManager.play('s4');
+			zombieDeathsound2 = 1;
+		}
+	}
+
+//killing third zombie
+if (mousePressed == true && mouseButton == LEFT && mouseX > zombie3x && mouseX < zombie3x + 30
+&& mouseY > zombie3y && mouseY < zombie3y + 30 && stopCount3 == 0)
+	{
+		zombieCount = zombieCount - 1;
+		zombieLife3 = 0;
+		stopCount3 = 1;
+		zombieHealth3 = 0;
+	}
+if (zombieLife3 == 0)
+	{
+		image(blood,zombie3x-20,zombie3y-10,70,50);
+		if (zombieDeathsound3 == 0)
+		{
+			soundManager.play('s4');
+			zombieDeathsound3 = 1;
+		}
+	}
+
+//killing fourth zombie
+if (mousePressed == true && mouseButton == LEFT && mouseX > zombie4x && mouseX < zombie4x + 30
+&& mouseY > zombie4y && mouseY < zombie4y + 30 && stopCount4 ==0)
+	{
+		zombieCount = zombieCount - 1;
+		zombieLife4 = 0;
+		stopCount4 = 1;
+		zombieHealth4 = 0;
+	}
+if (zombieLife4 == 0)
+	{
+		image(blood,zombie4x-20,zombie4y-10,70,50);
+		if (zombieDeathsound4 == 0)
+		{
+			soundManager.play('s4');
+			zombieDeathsound4 = 1;
+		}
+	}
+
+//killing 5th zombie
+if (mousePressed == true && mouseButton == LEFT && mouseX > zombie5x && mouseX < zombie5x + 30
+&& mouseY > zombie5y && mouseY < zombie5y + 30 && stopCount5 ==0)
+	{
+		zombieCount = zombieCount - 1;
+		zombieLife5 = 0;
+		stopCount5 = 1;
+		zombieHealth5 = 0;
+	}
+if (zombieLife5 == 0)
+	{
+		image(blood,zombie5x-20,zombie5y-10,70,50);
+		if (zombieDeathsound5 == 0)
+		{
+			soundManager.play('s4');
+			zombieDeathsound5 = 1;
+		}
+	}
+
+//killing 6th zombie
+if (mousePressed == true && mouseButton == LEFT && mouseX > zombie6x && mouseX < zombie6x + 30
+&& mouseY > zombie6y && mouseY < zombie6y + 30 && stopCount6 ==0)
+	{
+		zombieCount = zombieCount - 1;
+		zombieLife6 = 0;
+		stopCount6 = 1;
+		zombieHealth6 = 0;
+	}
+if (zombieLife6 == 0)
+	{
+		image(blood,zombie6x-20,zombie6y-10,70,50);
+		if (zombieDeathsound6 == 0)
+		{
+			soundManager.play('s4');
+			zombieDeathsound6 = 1;
+		}
+	}
+	
+//killing 7th zombie
+if (mousePressed == true && mouseButton == LEFT && mouseX > zombie7x && mouseX < zombie7x + 30
+&& mouseY > zombie7y && mouseY < zombie7y + 30 && stopCount7 ==0)
+	{
+		zombieCount = zombieCount - 1;
+		zombieLife7 = 0;
+		stopCount7 = 1;
+		zombieHealth7 = 0;
+	}
+if (zombieLife7 == 0)
+	{
+		image(blood,zombie7x-20,zombie7y-10,70,50);
+		if (zombieDeathsound7 == 0)
+		{
+			soundManager.play('s4');
+			zombieDeathsound7 = 1;
+		}
+	}
+	
+//killing 8th zombie
+if (mousePressed == true && mouseButton == LEFT && mouseX > zombie8x && mouseX < zombie8x + 30
+&& mouseY > zombie8y && mouseY < zombie8y + 30 && stopCount8 ==0)
+	{
+		zombieCount = zombieCount - 1;
+		zombieLife8 = 0;
+		stopCount8 = 1;
+		zombieHealth8 = 0;
+	}
+if (zombieLife8 == 0)
+	{
+		image(blood,zombie8x-20,zombie8y-10,70,50);
+		if (zombieDeathsound8 == 0)
+		{
+			soundManager.play('s4');
+			zombieDeathsound8 = 1;
+		}
+	}
+
+//killing 9th zombie
+if (mousePressed == true && mouseButton == LEFT && mouseX > zombie9x && mouseX < zombie9x + 30
+&& mouseY > zombie9y && mouseY < zombie9y + 30 && stopCount9 ==0)
+	{
+		zombieCount = zombieCount - 1;
+		zombieLife9 = 0;
+		stopCount9 = 1;
+		zombieHealth9 = 0;
+	}
+if (zombieLife9 == 0)
+	{
+		image(blood,zombie9x-20,zombie9y-10,70,50);
+		if (zombieDeathsound9 == 0)
+		{
+			soundManager.play('s4');
+			zombieDeathsound9 = 1;
+		}
+	}
+
+//killing 10th zombie
+if (mousePressed == true && mouseButton == LEFT && mouseX > zombie10x && mouseX < zombie10x + 30
+&& mouseY > zombie10y && mouseY < zombie10y + 30 && stopCount10 ==0)
+	{
+		zombieCount = zombieCount - 1;
+		zombieLife10 = 0;
+		stopCount10 = 1;
+		zombieHealth10 = 0;
+	}
+if (zombieLife10 == 0)
+	{
+		image(blood,zombie10x-20,zombie10y-10,70,50);
+		if (zombieDeathsound10 == 0)
+		{
+			soundManager.play('s4');
+			zombieDeathsound10 = 1;
+		}
+	}
+
+//killing 11th zombie
+if (mousePressed == true && mouseButton == LEFT && mouseX > zombie11x && mouseX < zombie11x + 30
+&& mouseY > zombie11y && mouseY < zombie11y + 30 && stopCount11 ==0)
+	{
+		zombieCount = zombieCount - 1;
+		zombieLife11 = 0;
+		stopCount11 = 1;
+		zombieHealth11 = 0;
+	}
+if (zombieLife11 == 0)
+	{
+		image(blood,zombie11x-20,zombie11y-10,70,50);
+		if (zombieDeathsound11 == 0)
+		{
+			soundManager.play('s4');
+			zombieDeathsound11 = 1;
+		}
+	}
+	
+//killing 12th zombie
+if (mousePressed == true && mouseButton == LEFT && mouseX > zombie12x && mouseX < zombie12x + 30
+&& mouseY > zombie12y && mouseY < zombie12y + 30 && stopCount12 ==0)
+	{
+		zombieCount = zombieCount - 1;
+		zombieLife12 = 0;
+		stopCount12 = 1;
+		zombieHealth12 = 0;
+	}
+if (zombieLife12 == 0)
+	{
+		image(blood,zombie12x-20,zombie12y-10,70,50);
+		if (zombieDeathsound12 == 0)
+		{
+			soundManager.play('s4');
+			zombieDeathsound12 = 1;
+		}
+	}
+
+//round over
+if (zombieCount == 0 && zombiePassedCount1 + zombiePassedCount2 + zombiePassedCount3 + 
+     zombiePassedCount4 + zombiePassedCount5 + zombiePassedCount6 + 
+     zombiePassedCount7 + zombiePassedCount8 + zombiePassedCount9 + zombiePassedCount10
+     + zombiePassedCount11 + zombiePassedCount12 < 4)
+	{
+	image(roundClear,50,50);
+	image(nextRoundn,75,250);
+	if (mouseX > 75 && mouseX < 558 && mouseY > 250 && mouseY < 340)
+		{
+			image(nextRoundh,75,250);
+		}
+	if (mousePressed == true && mouseButton == LEFT && mouseX > 75 && mouseX < 558 
+	&& mouseY > 250 && mouseY < 340)
+		{
+			link("Game5.html");
+		}
+		
+	if (stopSound == 0)
+		{
+			soundManager.play('s3');
+			stopSound = 1;
+		}
+	}
+
+//round lost
+if (zombiePassedCount1 + zombiePassedCount2 + zombiePassedCount3 + zombiePassedCount4
+	+ zombiePassedCount5 + zombiePassedCount6 + zombiePassedCount7 + zombiePassedCount8 +
+	zombiePassedCount9 + zombiePassedCount10 + zombiePassedCount11 + zombiePassedCount12 > 3)
+	{
+		image(restartn,190,50);
+		image(youLose,170,280);
+		if (sadViolin == 0)
+			{
+				soundManager.play('s6');
+				sadViolin = 1;
+			}
+		if (mouseX > 190 && mouseX < 440 && mouseY > 50 && mouseY < 120)
+			{
+				image(restarth,190,50);
+			}
+		if (mousePressed == true && mouseButton == LEFT && mouseX > 190
+		&& mouseX < 440 && mouseY > 50 && mouseY < 120)
+			{
+				link("Game2.html");
+			}
+	}
+
+//Shooting
+image(crosshair,mouseX - 15,mouseY - 15,30,30);
+if (mousePressed == true && mouseButton == LEFT && mouseFire == 0 && gunSound == 0)
+	{
+		image(gunFlash,mouseX - 65,mouseY - 40,140,80);
+		soundManager.play('s5');
+		gunSound = 1;
+		mouseFire = 1;
+	}
+if (mousePressed == false && mouseButton == LEFT && mouseFire == 1)
+	{
+		gunSound = 0
+		mouseFire = 0;
+	}
+
+//ZombieCount
+text ("Zombie Count:",16,20);
+text(zombieCount,100,20);
+
+//ZombiesPassed
+text(zombiePassedCount1 + zombiePassedCount2 + zombiePassedCount3 + 
+     zombiePassedCount4 + zombiePassedCount5 + zombiePassedCount6 + 
+     zombiePassedCount7 + zombiePassedCount8 + zombiePassedCount9 +
+     zombiePassedCount10 + zombiePassedCount11 + zombiePassedCount12,620,380);
+text("Zombies Passed:",520,380);
+}
+
+	</script>
+	<canvas id="mycanvas"></canvas>
+</center>
